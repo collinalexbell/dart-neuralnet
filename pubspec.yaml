@@ -1,4 +1,4 @@
-name: Backprop
-description: A sample command-line application
-#dependencies:
-#  unittest: any
+name: neural_net
+description: A sample web application
+dependencies:
+  browser: any
