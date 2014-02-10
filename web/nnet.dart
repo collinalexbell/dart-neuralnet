@@ -2,24 +2,49 @@ import 'dart:io';
 import 'dart:math';
 
 
-var learning_rate=.1;
+var learning_rate=1;
+
 void main() {
+for (int t = 0; t < 20; t++){
+  var rmse_tot = 0;
+for (int n = 0; n < 10; n++){
   var net = new Neural_Net(3, 2);
   net.wire_connections();
   List<double> sample_input = [1,1];
   List<double> expected_output = [0,0];
-  List<double> sample_input2 = [1,0];
-  List<double> expected_output2 = [1,1];
+  List<double> sample_input2 = [0,0];
+  List<double> expected_output2 = [0,0];
   List<double> sample_input3= [0,1];
   List<double> expected_output3= [1,1];
-  List<double> sample_input4 = [0,0];
-  List<double> expected_output4 = [0,0];
-  for(int i = 0; i <100; i++){
+  List<double> sample_input4 = [1,0];
+  List<double> expected_output4 = [1,1];
+
+  for(int i = 0; i <1000; i++){
     net.learn(sample_input, expected_output);
     net.learn(sample_input2, expected_output2);
     net.learn(sample_input3, expected_output3);
     net.learn(sample_input4, expected_output4);
   }
+  List<List<double>> inputs = new List<List<double>>();
+  List<List<double>> outputs = new List<List<double>>();
+
+  inputs.add(sample_input);
+  inputs.add(sample_input2);
+  inputs.add(sample_input3);
+  inputs.add(sample_input4);
+  
+  outputs.add(expected_output);
+  outputs.add(expected_output2);
+  outputs.add(expected_output3);
+  outputs.add(expected_output4);
+
+  rmse_tot += net.test_net(inputs, outputs);
+}
+  var rmse_eq = rmse_tot/10;
+  stdout.write(learning_rate.toString() + ',');
+  stdout.write(rmse_eq.toString() + '\n');
+  learning_rate += .1;
+}
   
 
 }
@@ -31,6 +56,22 @@ class Neural_Net
     for (int i = 0; i < layers; i++){
       this.layers.add(new Layer(nodes_in_layer));
     }
+  }
+
+  double test_net(List<List<double>>inputs, List<List<double>>outputs){
+    var total_sum = 0;
+    for (int i = 0; i < inputs.length; i++){
+      var pattern_sum = 0;
+      run_net(inputs[i]);
+      List<double> actual = get_output();
+        for (int j = 0; j < actual.length; j++){
+          pattern_sum += (actual[j]-outputs[i][j] );
+        }
+        pattern_sum = pattern_sum/(actual.length);
+        total_sum += pow(pattern_sum,2);
+    }
+    var rmse = sqrt((1/(2*inputs.length))*total_sum);
+    return rmse;
   }
 
   void learn(List<double> input, List<double> expected_output){
@@ -45,12 +86,12 @@ class Neural_Net
     for (int i = 1; i < layers.length; i++){
       layers[i].change_weights(); 
     }
-    print_net();
+    //print_net();
 
   }
   
   void print_net(){
-    for (int i = 0; i < layers.length; i++){
+    for (int i = layers.length-1; i < layers.length; i++){
       var layer = layers[i];
       stdout.write('Delta values:');
       for (int j = 0; j < layers[i].neurons.length; j++){
@@ -113,6 +154,7 @@ class Neural_Net
     for(int i = 0; i < output_layer.neurons.length; i++){
       rv.add(output_layer.neurons[i].output);
     }
+    return rv;
   }
   
 }
@@ -223,7 +265,7 @@ class Neuron
   
   void compute_output_delta(var expected){
       //Compute output delta
-      this.delta = 2*alpha*output*(1-output)*(expected-output);
+      this.delta = output*(1-output)*(expected-output);
       
   }
   void compute_delta(){
@@ -233,7 +275,7 @@ class Neuron
        Neuron nlayer_neuron = layer.next().neurons[i];
         delta_sum += nlayer_neuron.delta*this.output_connections[i].weight ;
       }
-      this.delta = alpha*output*(1-output)*delta_sum;
+      this.delta = output*(1-output)*delta_sum;
   }
 
   void change_weights(){
