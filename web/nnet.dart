@@ -2,22 +2,22 @@ import 'dart:io';
 import 'dart:math';
 
 
-var learning_rate=1;
+var learning_rate=.01;
 
 void main() {
-for (int t = 0; t < 20; t++){
+for (int t = 0; t < 200; t++){
   var rmse_tot = 0;
 for (int n = 0; n < 10; n++){
-  var net = new Neural_Net(3, 2);
+  var net = new Neural_Net(1, 2,2,1);
   net.wire_connections();
   List<double> sample_input = [1,1];
-  List<double> expected_output = [0,0];
+  List<double> expected_output = [0];
   List<double> sample_input2 = [0,0];
-  List<double> expected_output2 = [0,0];
+  List<double> expected_output2 = [0];
   List<double> sample_input3= [0,1];
-  List<double> expected_output3= [1,1];
+  List<double> expected_output3= [1];
   List<double> sample_input4 = [1,0];
-  List<double> expected_output4 = [1,1];
+  List<double> expected_output4 = [1];
 
   for(int i = 0; i <1000; i++){
     net.learn(sample_input, expected_output);
@@ -43,19 +43,21 @@ for (int n = 0; n < 10; n++){
   var rmse_eq = rmse_tot/10;
   stdout.write(learning_rate.toString() + ',');
   stdout.write(rmse_eq.toString() + '\n');
-  learning_rate += .1;
+  learning_rate += .02;
+  }
 }
   
 
-}
 
 class Neural_Net
 {
   List<Layer> layers = new List<Layer>();
-  Neural_Net(int layers, int nodes_in_layer){
-    for (int i = 0; i < layers; i++){
-      this.layers.add(new Layer(nodes_in_layer));
+  Neural_Net(int hidden_layers, int n_hidden, int n_in, int n_out){
+    this.layers.add(new Layer(n_in));
+    for (int i = 0; i < hidden_layers; i++){
+      this.layers.add(new Layer(n_hidden));
     }
+    this.layers.add(new Layer(n_out));
   }
 
   double test_net(List<List<double>>inputs, List<List<double>>outputs){
