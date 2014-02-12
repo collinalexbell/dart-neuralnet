@@ -1,5 +1,8 @@
-name: neural_net
-description: A sample web application
+name: dart_neuralnet
+author: SlightlyCyborg
+homepage: https://github.com/SlightlyCyborg/dart-neuralnet
+version: 0.1
+description: A neural net framework
 dependencies:
   browser: any
   csvparser: any
