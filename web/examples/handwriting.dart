@@ -105,7 +105,7 @@ void start_net(List<List<double>> inputs, List<int> answers){
       if (j%7 == 0){ 
         net.learn(inputs[j], outputs[j]);
       }
-      if(j%21 == 0){
+      if(j%22 == 0){
         net.run_net(inputs[j]);
         var out = net.get_output();
         print('Expected Out:'+ outputs[j].toString());

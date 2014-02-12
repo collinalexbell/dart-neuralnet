@@ -5,3 +5,7 @@ packages:
     description: browser
     source: hosted
     version: "0.9.1"
+  csvparser:
+    description: csvparser
+    source: hosted
+    version: "1.0.7"

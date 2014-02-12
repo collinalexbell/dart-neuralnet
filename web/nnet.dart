@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 
-var learning_rate=.01;
+//var learning_rate=.01;
 
 void main() {
 for (int t = 0; t < 200; t++){
@@ -52,12 +52,14 @@ for (int n = 0; n < 10; n++){
 class Neural_Net
 {
   List<Layer> layers = new List<Layer>();
-  Neural_Net(int hidden_layers, int n_hidden, int n_in, int n_out){
-    this.layers.add(new Layer(n_in));
+  double learning_rate;
+  Neural_Net(int hidden_layers, int n_hidden, int n_in, int n_out, double l_r){
+    this.learning_rate = l_r;
+    this.layers.add(new Layer(n_in, l_r));
     for (int i = 0; i < hidden_layers; i++){
-      this.layers.add(new Layer(n_hidden));
+      this.layers.add(new Layer(n_hidden, l_r));
     }
-    this.layers.add(new Layer(n_out));
+    this.layers.add(new Layer(n_out, l_r));
   }
 
   double test_net(List<List<double>>inputs, List<List<double>>outputs){
@@ -80,12 +82,14 @@ class Neural_Net
     run_net(input);
     //Compute Deltas
     for (int i = 0; i < layers.length; i++){
+      //print('Layer deltas:' + i.toString());
       var index = layers.length-1-i;
       if (layers[index].previousLayer != null){
         layers[index].compute_deltas(expected_output);
       }
     }
     for (int i = 1; i < layers.length; i++){
+      //print('Layer weights' + i.toString());
       layers[i].change_weights(); 
     }
     //print_net();
@@ -125,7 +129,7 @@ class Neural_Net
     }
   }
   
-  void run_net(List<double> inputs){
+  List<double> run_net(List<double> inputs){
     if (inputs.length != layers[0].neurons.length){
       print('Input size is not not compatable');
     }else{
@@ -141,6 +145,7 @@ class Neural_Net
         layers[i].run_layer();
       }
     }
+    return this.get_output();
   }
   
   
@@ -164,10 +169,12 @@ class Neural_Net
 class Layer
 {
   int alpha = 1;
+  double learning_rate;
   Layer nextLayer = null;
   Layer previousLayer = null;
   List<Neuron> neurons = new List<Neuron>();
-  Layer(int nodes_in_layer){
+  Layer(int nodes_in_layer, double l_r){
+    learning_rate = l_r;
     for (int i = 0; i<nodes_in_layer; i++){
       neurons.add(new Neuron(this));
     }
@@ -283,13 +290,13 @@ class Neuron
   void change_weights(){
     if (layer.previousLayer != null){
       for (int i = 0; i < input_connections.length; i++){
-        input_connections[i].weight += input_connections[i].n_from.output * delta * learning_rate;
+        input_connections[i].weight += input_connections[i].n_from.output * delta * layer.learning_rate;
       }
     }
   }
 
   void change_bias(){
-    bias += learning_rate * delta;
+    bias += layer.learning_rate * delta;
   }
 }
 
