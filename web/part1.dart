@@ -43,11 +43,14 @@ class Neuron1  extends NeuronPart {
 
 
     //Create buffers but in for loop. WILL THIS MADNESS EVER END?!
-    for (int i =0; i < 10; i++){
-      bufferList.add(gl.createBuffer());
+    for (int j = 0; j < 10; j++){
+      for (int i = 0; i < 10; i++){
+        bufferList.add(gl.createBuffer());
+      }
     }
 
 
+    for (int j = 0; j < 10; j++){
     for (int i = 0; i < 10; i++){
       gl.bindBuffer(ARRAY_BUFFER, bufferList[i]);
       gl.bufferDataTyped(ARRAY_BUFFER, new Float32List.fromList([
@@ -56,6 +59,7 @@ class Neuron1  extends NeuronPart {
            1.0, -1.0,  0.0
           ]), STATIC_DRAW);
       
+    }
     }
 
     // Specify the color to clear with (black with 100% alpha) and then enable
@@ -78,15 +82,18 @@ class Neuron1  extends NeuronPart {
     // First stash the current model view matrix before we start moving around.
     mvPushMatrix();
 
-    mvMatrix.translate([0, -10, -75.0]);
+    mvMatrix.translate([-10, 20, -75.0]);
 
 
+    for (int j = 0; j < 10; j++){
+      mvMatrix.translate([2, -30, 0]);
     for (int i = 0; i < 10; i++){
       mvMatrix.translate([0.0,3.0,0.0]);
       gl.bindBuffer(ARRAY_BUFFER, bufferList[i]);
       gl.vertexAttribPointer(program.attributes['aVertexPosition'], 3, FLOAT, false, 0, 0);
       setMatrixUniforms();
       gl.drawArrays(TRIANGLE_STRIP, 0, 3);
+    }
     }
 
     // Finally, reset the matrix back to what it was before we moved around.
