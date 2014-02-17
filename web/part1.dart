@@ -21,6 +21,7 @@ class Neuron1  extends NeuronPart {
   GlProgram program;
 
   Buffer triangleVertexPositionBuffer, squareVertexPositionBuffer, otherBuffer;
+  List<Buffer> bufferList = new List<Buffer>();
 
   Neuron1() {
     program = new GlProgram('''
@@ -44,6 +45,12 @@ class Neuron1  extends NeuronPart {
     // Allocate and build the two buffers we need to draw a triangle and box.
     // createBuffer() asks the WebGL system to allocate some data for us
     triangleVertexPositionBuffer = gl.createBuffer();
+
+    //Create buffers but in for loop. WILL THIS MADNESS EVER END?!
+    for (int i =0; i < 10; i++){
+      bufferList.add(gl.createBuffer());
+    }
+
 
     // bindBuffer() tells the WebGL system the target of future calls
     gl.bindBuffer(ARRAY_BUFFER, triangleVertexPositionBuffer);
@@ -70,6 +77,16 @@ class Neuron1  extends NeuronPart {
           -1.0, -1.0,  0.0,
            1.0, -1.0,  0.0
           ]), STATIC_DRAW);
+
+    for (int i = 0; i < 10; i++){
+      gl.bindBuffer(ARRAY_BUFFER, bufferList[i]);
+      gl.bufferDataTyped(ARRAY_BUFFER, new Float32List.fromList([
+           0.0,  1.0,  0.0,
+          -1.0, -1.0,  0.0,
+           1.0, -1.0,  0.0
+          ]), STATIC_DRAW);
+      
+    }
 
     // Specify the color to clear with (black with 100% alpha) and then enable
     // depth testing.
@@ -117,6 +134,16 @@ class Neuron1  extends NeuronPart {
     gl.vertexAttribPointer(program.attributes['aVertexPosition'], 3, FLOAT, false, 0, 0);
     setMatrixUniforms();
     gl.drawArrays(TRIANGLE_STRIP, 0, 3);
+
+    mvMatrix.translate([1.0, -10, 0.0]);
+
+    for (int i = 0; i < 10; i++){
+      mvMatrix.translate([0.0,3.0,0.0]);
+      gl.bindBuffer(ARRAY_BUFFER, bufferList[i]);
+      gl.vertexAttribPointer(program.attributes['aVertexPosition'], 3, FLOAT, false, 0, 0);
+      setMatrixUniforms();
+      gl.drawArrays(TRIANGLE_STRIP, 0, 3);
+    }
 
     // Finally, reset the matrix back to what it was before we moved around.
     mvPopMatrix();
