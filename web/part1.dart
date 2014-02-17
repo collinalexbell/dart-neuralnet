@@ -20,7 +20,8 @@ part of learn_gl;
 class Neuron1  extends NeuronPart {
   GlProgram program;
 
-  List<Buffer> bufferList = new List<Buffer>();
+  Buffer tri_buff = gl.createBuffer();
+  
 
   Neuron1() {
     program = new GlProgram('''
@@ -41,26 +42,16 @@ class Neuron1  extends NeuronPart {
         ''', ['aVertexPosition'], ['uMVMatrix', 'uPMatrix']);
     gl.useProgram(program.program);
 
-
     //Create buffers but in for loop. WILL THIS MADNESS EVER END?!
-    for (int j = 0; j < 10; j++){
-      for (int i = 0; i < 10; i++){
-        bufferList.add(gl.createBuffer());
-      }
-    }
 
 
-    for (int j = 0; j < 10; j++){
-    for (int i = 0; i < 10; i++){
-      gl.bindBuffer(ARRAY_BUFFER, bufferList[i]);
+      gl.bindBuffer(ARRAY_BUFFER, tri_buff);
       gl.bufferDataTyped(ARRAY_BUFFER, new Float32List.fromList([
            0.0,  1.0,  0.0,
           -1.0, -1.0,  0.0,
            1.0, -1.0,  0.0
           ]), STATIC_DRAW);
       
-    }
-    }
 
     // Specify the color to clear with (black with 100% alpha) and then enable
     // depth testing.
@@ -89,7 +80,7 @@ class Neuron1  extends NeuronPart {
       mvMatrix.translate([2, -30, 0]);
     for (int i = 0; i < 10; i++){
       mvMatrix.translate([0.0,3.0,0.0]);
-      gl.bindBuffer(ARRAY_BUFFER, bufferList[i]);
+      gl.bindBuffer(ARRAY_BUFFER,tri_buff);
       gl.vertexAttribPointer(program.attributes['aVertexPosition'], 3, FLOAT, false, 0, 0);
       setMatrixUniforms();
       gl.drawArrays(TRIANGLE_STRIP, 0, 3);
