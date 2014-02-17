@@ -21,6 +21,7 @@ class Neuron1  extends NeuronPart {
   GlProgram program;
 
   Buffer tri_buff = gl.createBuffer();
+  double fov = 45.0;
   
 
   Neuron1() {
@@ -68,12 +69,12 @@ class Neuron1  extends NeuronPart {
     // Setup the perspective - you might be wondering why we do this every
     // time, and that will become clear in much later lessons. Just know, you
     // are not crazy for thinking of caching this.
-    pMatrix = Matrix4.perspective(45.0, aspect, 0.1, 100.0);
+    pMatrix = Matrix4.perspective(fov, aspect, 0.1, 200.0);
 
     // First stash the current model view matrix before we start moving around.
     mvPushMatrix();
 
-    mvMatrix.translate([-10, 20, -75.0]);
+    mvMatrix.translate([-33, 20, -75.0]);
 
 
     for (int j = 0; j < 10; j++){
@@ -108,5 +109,23 @@ class Neuron1  extends NeuronPart {
   void handleKeys() {
     // We're not handling keys right now, but if you want to experiment, here's
     // where you'd get to play around.
+  }
+
+  void drawNeurons(int height, int width, int rows, int cols){
+    // Basic viewport setup and clearing of the screen
+    gl.viewport(0, 0, viewWidth, viewHeight);
+    gl.clear(COLOR_BUFFER_BIT | DEPTH_BUFFER_BIT);
+    gl.enable(DEPTH_TEST);
+    gl.disable(BLEND);
+
+    // Setup the perspective - you might be wondering why we do this every
+    // time, and that will become clear in much later lessons. Just know, you
+    // are not crazy for thinking of caching this.
+    pMatrix = Matrix4.perspective(45.0, aspect, 0.1, 100.0);
+      double unit_width; // = 2*depth*tan(pov/2);
+
+    // First stash the current model view matrix before we start moving around.
+    mvPushMatrix();
+    
   }
 }
