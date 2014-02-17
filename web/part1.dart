@@ -20,7 +20,7 @@ part of learn_gl;
 class Neuron1  extends NeuronPart {
   GlProgram program;
 
-  Buffer triangleVertexPositionBuffer, squareVertexPositionBuffer;
+  Buffer triangleVertexPositionBuffer, squareVertexPositionBuffer, otherBuffer;
 
   Neuron1() {
     program = new GlProgram('''
@@ -62,6 +62,15 @@ class Neuron1  extends NeuronPart {
           -1.0, -1.0,  0.0
         ]), STATIC_DRAW);
 
+
+    otherBuffer = gl.createBuffer();
+    gl.bindBuffer(ARRAY_BUFFER, otherBuffer);
+    gl.bufferDataTyped(ARRAY_BUFFER, new Float32List.fromList([
+           0.0,  1.0,  0.0,
+          -1.0, -1.0,  0.0,
+           1.0, -1.0,  0.0
+          ]), STATIC_DRAW);
+
     // Specify the color to clear with (black with 100% alpha) and then enable
     // depth testing.
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -82,7 +91,7 @@ class Neuron1  extends NeuronPart {
     // First stash the current model view matrix before we start moving around.
     mvPushMatrix();
 
-    mvMatrix.translate([0, 1.5, -7.0]);
+    mvMatrix.translate([0, 1.5, -75.0]);
 
     // Here's that bindBuffer() again, as seen in the constructor
     gl.bindBuffer(ARRAY_BUFFER, triangleVertexPositionBuffer);
@@ -101,6 +110,13 @@ class Neuron1  extends NeuronPart {
     setMatrixUniforms();
     // Except now draw 2 triangles, re-using the vertices found in the buffer.
     gl.drawArrays(TRIANGLE_STRIP, 0, 4);
+
+    mvMatrix.translate([0.0, -3, 0.0]);
+
+    gl.bindBuffer(ARRAY_BUFFER, otherBuffer);
+    gl.vertexAttribPointer(program.attributes['aVertexPosition'], 3, FLOAT, false, 0, 0);
+    setMatrixUniforms();
+    gl.drawArrays(TRIANGLE_STRIP, 0, 3);
 
     // Finally, reset the matrix back to what it was before we moved around.
     mvPopMatrix();
