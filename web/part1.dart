@@ -20,7 +20,6 @@ part of learn_gl;
 class Neuron1  extends NeuronPart {
   GlProgram program;
 
-  Buffer triangleVertexPositionBuffer, squareVertexPositionBuffer, otherBuffer;
   List<Buffer> bufferList = new List<Buffer>();
 
   Neuron1() {
@@ -42,41 +41,12 @@ class Neuron1  extends NeuronPart {
         ''', ['aVertexPosition'], ['uMVMatrix', 'uPMatrix']);
     gl.useProgram(program.program);
 
-    // Allocate and build the two buffers we need to draw a triangle and box.
-    // createBuffer() asks the WebGL system to allocate some data for us
-    triangleVertexPositionBuffer = gl.createBuffer();
 
     //Create buffers but in for loop. WILL THIS MADNESS EVER END?!
     for (int i =0; i < 10; i++){
       bufferList.add(gl.createBuffer());
     }
 
-
-    // bindBuffer() tells the WebGL system the target of future calls
-    gl.bindBuffer(ARRAY_BUFFER, triangleVertexPositionBuffer);
-    gl.bufferDataTyped(ARRAY_BUFFER, new Float32List.fromList([
-           0.0,  1.0,  0.0,
-          -1.0, -1.0,  0.0,
-           1.0, -1.0,  0.0
-        ]), STATIC_DRAW);
-
-    squareVertexPositionBuffer = gl.createBuffer();
-    gl.bindBuffer(ARRAY_BUFFER, squareVertexPositionBuffer);
-    gl.bufferDataTyped(ARRAY_BUFFER, new Float32List.fromList([
-           1.0,  1.0,  0.0,
-          -1.0,  1.0,  0.0,
-           1.0, -1.0,  0.0,
-          -1.0, -1.0,  0.0
-        ]), STATIC_DRAW);
-
-
-    otherBuffer = gl.createBuffer();
-    gl.bindBuffer(ARRAY_BUFFER, otherBuffer);
-    gl.bufferDataTyped(ARRAY_BUFFER, new Float32List.fromList([
-           0.0,  1.0,  0.0,
-          -1.0, -1.0,  0.0,
-           1.0, -1.0,  0.0
-          ]), STATIC_DRAW);
 
     for (int i = 0; i < 10; i++){
       gl.bindBuffer(ARRAY_BUFFER, bufferList[i]);
@@ -108,34 +78,8 @@ class Neuron1  extends NeuronPart {
     // First stash the current model view matrix before we start moving around.
     mvPushMatrix();
 
-    mvMatrix.translate([0, 1.5, -75.0]);
+    mvMatrix.translate([0, -10, -75.0]);
 
-    // Here's that bindBuffer() again, as seen in the constructor
-    gl.bindBuffer(ARRAY_BUFFER, triangleVertexPositionBuffer);
-    // Set the vertex attribute to the size of each individual element (x,y,z)
-    gl.vertexAttribPointer(program.attributes['aVertexPosition'], 3, FLOAT, false, 0, 0);
-    setMatrixUniforms();
-    // Now draw 3 vertices
-    gl.drawArrays(TRIANGLE_STRIP, 0, 3);
-
-    // Move 3 units to the right
-    mvMatrix.translate([0.0, -3, 0.0]);
-
-    // And get ready to draw the square just like we did the triangle...
-    gl.bindBuffer(ARRAY_BUFFER, squareVertexPositionBuffer);
-    gl.vertexAttribPointer(program.attributes['aVertexPosition'], 3, FLOAT, false, 0, 0);
-    setMatrixUniforms();
-    // Except now draw 2 triangles, re-using the vertices found in the buffer.
-    gl.drawArrays(TRIANGLE_STRIP, 0, 4);
-
-    mvMatrix.translate([0.0, -3, 0.0]);
-
-    gl.bindBuffer(ARRAY_BUFFER, otherBuffer);
-    gl.vertexAttribPointer(program.attributes['aVertexPosition'], 3, FLOAT, false, 0, 0);
-    setMatrixUniforms();
-    gl.drawArrays(TRIANGLE_STRIP, 0, 3);
-
-    mvMatrix.translate([1.0, -10, 0.0]);
 
     for (int i = 0; i < 10; i++){
       mvMatrix.translate([0.0,3.0,0.0]);
