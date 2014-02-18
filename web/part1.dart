@@ -60,6 +60,7 @@ class Neuron1  extends NeuronPart {
   }
 
   void drawScene(num viewWidth, num viewHeight, num aspect) {
+    print("in draw scene");
     // Basic viewport setup and clearing of the screen
     gl.viewport(0, 0, viewWidth, viewHeight);
     gl.clear(COLOR_BUFFER_BIT | DEPTH_BUFFER_BIT);
@@ -111,8 +112,9 @@ class Neuron1  extends NeuronPart {
     // where you'd get to play around.
   }
 
-  void drawNeurons(int height, int width, int rows, int cols){
+  void drawNeurons(int viewHeight, int viewWidth, num aspect, int rows, int cols){
     // Basic viewport setup and clearing of the screen
+    print ("in draw neuons");
     gl.viewport(0, 0, viewWidth, viewHeight);
     gl.clear(COLOR_BUFFER_BIT | DEPTH_BUFFER_BIT);
     gl.enable(DEPTH_TEST);
@@ -121,11 +123,43 @@ class Neuron1  extends NeuronPart {
     // Setup the perspective - you might be wondering why we do this every
     // time, and that will become clear in much later lessons. Just know, you
     // are not crazy for thinking of caching this.
-    pMatrix = Matrix4.perspective(45.0, aspect, 0.1, 100.0);
-      double unit_width; // = 2*depth*tan(pov/2);
+    pMatrix = Matrix4.perspective(fov, aspect, 0.1, 100.0);
+      double radians = fov * (PI/180);
+      double unit_width = 2*75*tan(radians/2);
+      print (unit_width);
+      
+      // Calculate space per neuron
+      double neuron_volume = (cols*2);
+      double num_of_spaces = cols + 1;
+      double volume_of_spaces = unit_width-neuron_volume;
+      double volume_of_a_space = volume_of_spaces/num_of_spaces;
+      
+
+      
 
     // First stash the current model view matrix before we start moving around.
     mvPushMatrix();
+
+    mvMatrix.translate([-((unit_width/2)), 20, -75.0]);
+
+
+    for (int j = 0; j < cols; j++){
+      if (j != 0){
+        // +2 accounts for the length-x of the triangle
+        mvMatrix.translate([volume_of_a_space+2, -30, 0]);
+      }else{
+        mvMatrix.translate([volume_of_a_space, -30, 0]);
+      }
+    for (int i = 0; i < rows; i++){
+      mvMatrix.translate([0.0,3.0,0.0]);
+      gl.bindBuffer(ARRAY_BUFFER,tri_buff);
+      gl.vertexAttribPointer(program.attributes['aVertexPosition'], 3, FLOAT, false, 0, 0);
+      setMatrixUniforms();
+      gl.drawArrays(TRIANGLE_STRIP, 0, 3);
+    }
+    }
+
+    mvPopMatrix();
     
   }
 }

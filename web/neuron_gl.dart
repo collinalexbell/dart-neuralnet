@@ -93,7 +93,7 @@ tick(time) {
   if (trackFrameRate) frameCount(time);
   neuron_part.handleKeys();
   neuron_part.animate(time);
-  neuron_part.drawScene(canvas.width, canvas.height, canvas.width/canvas.height);
+  neuron_part.drawNeurons(canvas.width, canvas.height, canvas.width/canvas.height,10,10);
 }
 
 /**
@@ -211,6 +211,7 @@ abstract class NeuronPart {
    * Handle any keyboard events.
    */
   void handleKeys() {}
+
 
 
   /**
