@@ -93,7 +93,7 @@ tick(time) {
   if (trackFrameRate) frameCount(time);
   neuron_part.handleKeys();
   neuron_part.animate(time);
-  neuron_part.drawNeurons(canvas.width, canvas.height, canvas.width/canvas.height,10,10);
+  neuron_part.drawNeurons(canvas.width, canvas.height, canvas.width/canvas.height,10,20);
 }
 
 /**

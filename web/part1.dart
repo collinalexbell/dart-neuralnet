@@ -129,10 +129,15 @@ class Neuron1  extends NeuronPart {
       print (unit_width);
       
       // Calculate space per neuron
-      double neuron_volume = (cols*2);
-      double num_of_spaces = cols + 1;
-      double volume_of_spaces = unit_width-neuron_volume;
-      double volume_of_a_space = volume_of_spaces/num_of_spaces;
+      double neuron_volume_w = (cols*2);
+      double num_of_spaces_w = cols + 1;
+      double volume_of_spaces_w = unit_width-neuron_volume_w;
+      double volume_of_a_space_w = volume_of_spaces_w/num_of_spaces_w;
+
+      double neuron_volume_h = (rows*2);
+      double num_of_spaces_h = rows+1 ;
+      double volume_of_spaces_h = unit_width-neuron_volume_h;
+      double volume_of_a_space_h = volume_of_spaces_h/num_of_spaces_h;
       
 
       
@@ -140,22 +145,22 @@ class Neuron1  extends NeuronPart {
     // First stash the current model view matrix before we start moving around.
     mvPushMatrix();
 
-    mvMatrix.translate([-((unit_width/2)), 20, -75.0]);
+    mvMatrix.translate([-((unit_width/2)),-(unit_width/2), -75.0]);
 
 
     for (int j = 0; j < cols; j++){
       if (j != 0){
         // +2 accounts for the length-x of the triangle
-        mvMatrix.translate([volume_of_a_space+2, -30, 0]);
+        mvMatrix.translate([volume_of_a_space_w+2,-2*(unit_width/2)+2+1, 0]);
       }else{
-        mvMatrix.translate([volume_of_a_space, -30, 0]);
+        mvMatrix.translate([volume_of_a_space_w,0, 0]);
       }
     for (int i = 0; i < rows; i++){
-      mvMatrix.translate([0.0,3.0,0.0]);
       gl.bindBuffer(ARRAY_BUFFER,tri_buff);
       gl.vertexAttribPointer(program.attributes['aVertexPosition'], 3, FLOAT, false, 0, 0);
       setMatrixUniforms();
       gl.drawArrays(TRIANGLE_STRIP, 0, 3);
+      mvMatrix.translate([0.0, volume_of_a_space_h+2, 0.0]);
     }
     }
 
