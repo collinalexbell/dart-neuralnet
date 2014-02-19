@@ -145,15 +145,21 @@ class Neuron1  extends NeuronPart {
     // First stash the current model view matrix before we start moving around.
     mvPushMatrix();
 
-    mvMatrix.translate([-((unit_width/2)),-(unit_width/2), -75.0]);
+    mvMatrix.translate([-((unit_width/2)),-(unit_width/2)+4, -75.0]);
 
 
     for (int j = 0; j < cols; j++){
       if (j != 0){
-        // +2 accounts for the length-x of the triangle
-        mvMatrix.translate([volume_of_a_space_w+2,-2*(unit_width/2)+2+1, 0]);
+        //Every time we reset the mvMatrix we want to place it in the upper left corner
+        mvMatrix.translate([-((unit_width/2)),-(unit_width/2)+4, -75.0]);
+
+        //Move a volume of space and a neuron size(2) in x dir per neuron already drawn
+        //Add +1 space for the edge
+        int spaces_needed = j+1;
+        int neurons_already_drawn = j;
+        mvMatrix.translate([spaces_needed*volume_of_a_space_w+(neurons_already_drawn)*2,0, 0]);
       }else{
-        mvMatrix.translate([volume_of_a_space_w,0, 0]);
+        mvMatrix.translate([(j+1)*volume_of_a_space_w,0, 0]);
       }
     for (int i = 0; i < rows; i++){
       gl.bindBuffer(ARRAY_BUFFER,tri_buff);
@@ -162,9 +168,9 @@ class Neuron1  extends NeuronPart {
       gl.drawArrays(TRIANGLE_STRIP, 0, 3);
       mvMatrix.translate([0.0, volume_of_a_space_h+2, 0.0]);
     }
-    }
-
     mvPopMatrix();
+    mvPushMatrix();
+    }
     
   }
 }
