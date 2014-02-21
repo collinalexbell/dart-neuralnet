@@ -20,6 +20,7 @@ import 'dart:convert';
 import 'dart:web_gl';
 import 'dart:async';
 import 'dart:typed_data';
+import '../example/handwriting.dart'
 
 // Some of our objects that we're going to support
 part 'renderable.dart';
@@ -65,7 +66,7 @@ void main() {
     document.body.style.overflow = "hidden";
   }
 
-  neuron_part = new Neuron1();
+  neuron_part = new Neuron1(canvas.width, canvas.height,canvas.width/canvas.height );
 
   // Set the fill color to black
   gl.clearColor(0, 0, 0, 1.0);
@@ -95,8 +96,6 @@ tick(time) {
   neuron_part.animate(time);
   List<List<num>> input_vectors;
   input_vectors =  [
-    [0,0,0,1,0,0,1,0,1,0],
-    [0,0,1,1,0,1,0,0,0,1],
     [0,1,1,0,0,1,1,0,0,0],
     [0,0,0,0,0,0,0,0,0,0],
     [1,1,1,1,1,1,1,1,1,1],
@@ -106,7 +105,7 @@ tick(time) {
     [0,0,0,0,0,1,1,1,0,1],
     [0,0,0,0,0,1,1,1,0,1]
     ];
-  neuron_part.drawNeurons(canvas.width, canvas.height, canvas.width/canvas.height,input_vectors.length,input_vectors[0].length,input_vectors);
+  neuron_part.drawNeurons(input_vectors.length,input_vectors[0].length,input_vectors);
 }
 
 /**

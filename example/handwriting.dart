@@ -25,6 +25,24 @@ void main(){
 
 }
 
+void start_example(){
+  var file = new File('../data/digits.txt');
+  Future<String> finishedReading = file.readAsString(encoding: ASCII);
+  finishedReading.then((input_text){
+    List<List<double>> inputs = get_inputs(input_text);
+    
+    var answer_file = new File('../data/digit_labels.txt');
+    Future<String> finished_reading_answer = answer_file.readAsString(encoding: ASCII);
+    finished_reading_answer.then((answer_text){
+      List<int> answers = get_answers(answer_text);
+      print("Number of data:" + inputs.length.toString());
+      print("Number of answers:" + answers.length.toString());
+      start_net(inputs, answers);
+    });
+
+  });
+}
+
 List<List<double>> get_inputs(String data){
   List<String> temp = new List<String>();
   List<List<double>> rv = new List<List<double>>();

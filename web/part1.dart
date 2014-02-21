@@ -24,9 +24,13 @@ class Neuron1  extends NeuronPart {
   Buffer on_color_buff = gl.createBuffer();
   Buffer off_color_buff = gl.createBuffer();
   double fov = 45.0;
+  num viewWidth, viewHeight, aspect;
   
 
-  Neuron1() {
+  Neuron1(num viewWidth, num viewHeight, num aspect) {
+    this.viewWidth = viewWidth;
+    this.viewHeight = viewHeight;
+    this.aspect = aspect;
     program = new GlProgram('''
           precision mediump float;
 
@@ -102,7 +106,7 @@ void setMatrixUniforms() {
     // where you'd get to play around.
   }
 
-  void drawNeurons(int viewHeight, int viewWidth, num aspect, int rows, int cols, List<List<num>> input_vectors){
+  void drawNeurons(int rows, int cols, List<List<num>> input_vectors){
     print(input_vectors.length);
     // Basic viewport setup and clearing of the screen
     gl.viewport(0, 0, viewWidth, viewHeight);
@@ -154,7 +158,8 @@ void setMatrixUniforms() {
     for (int i = 0; i < rows; i++){
       gl.bindBuffer(ARRAY_BUFFER,tri_buff);
       gl.vertexAttribPointer(program.attributes['aVertexPosition'], 3, FLOAT, false, 0, 0);
-      if (input_vectors[i][j] > .5){
+      //Drawing things backwards!!!!
+      if (input_vectors[rows-i-1][j] > .5){
         gl.bindBuffer(ARRAY_BUFFER, on_color_buff);
       }else{
         gl.bindBuffer(ARRAY_BUFFER, off_color_buff);
