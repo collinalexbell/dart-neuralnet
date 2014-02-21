@@ -21,8 +21,8 @@ class Neuron1  extends NeuronPart {
   GlProgram program;
 
   Buffer tri_buff = gl.createBuffer();
-  Buffer on_color_buff = gl.createBuffer();
-  Buffer off_color_buff = gl.createBuffer();
+  //Buffer on_color_buff = gl.createBuffer();
+  //Buffer off_color_buff = gl.createBuffer();
   double fov = 45.0;
   
 
@@ -30,25 +30,26 @@ class Neuron1  extends NeuronPart {
     program = new GlProgram('''
           precision mediump float;
 
-          varying vec4 vColor;
+          uniform vec4 uColor;
 
           void main(void) {
-              gl_FragColor = vColor;
+              gl_FragColor = uColor;
           }
         ''','''
           attribute vec3 aVertexPosition;
-          attribute vec4 aVertexColor;
+          //attribute vec4 aVertexColor;
 
           uniform mat4 uMVMatrix;
           uniform mat4 uPMatrix;
 
-          varying vec4 vColor;
+          //varying vec4 vColor;
 
           void main(void) {
               gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
-              vColor = aVertexColor;
+              //vColor = aVertexColor;
           }
-        ''', ['aVertexPosition', 'aVertexColor'], ['uMVMatrix', 'uPMatrix']);
+        ''', //['aVertexPosition', 'aVertexColor'], ['uMVMatrix', 'uPMatrix']);
+      ['aVertexPosition'], ['uMVMatrix', 'uPMatrix', 'uColor']);
     gl.useProgram(program.program);
 
     //Create buffers but in for loop. WILL THIS MADNESS EVER END?!
@@ -61,6 +62,7 @@ class Neuron1  extends NeuronPart {
            1.0, -1.0,  0.0
           ]), STATIC_DRAW);
 
+      /*
       gl.bindBuffer(ARRAY_BUFFER, on_color_buff);
       gl.bufferDataTyped(ARRAY_BUFFER, new Float32List.fromList([
            1.0,  0.0,  0.0, 1.0,
@@ -75,7 +77,7 @@ class Neuron1  extends NeuronPart {
            1.0,  1.0,  1.0, 1.0,
            1.0,  1.0,  1.0, 1.0
            ]), STATIC_DRAW);
-      
+      */
 
     // Specify the color to clear with (black with 100% alpha) and then enable
     // depth testing.
@@ -102,13 +104,16 @@ void setMatrixUniforms() {
     // where you'd get to play around.
   }
 
-  void drawNeurons(int viewHeight, int viewWidth, num aspect, int rows, int cols){
+  void drawNeurons(int viewHeight, int viewWidth, num aspect, int ro, int co){
     // Basic viewport setup and clearing of the screen
     print ("in draw neuons");
     gl.viewport(0, 0, viewWidth, viewHeight);
     gl.clear(COLOR_BUFFER_BIT | DEPTH_BUFFER_BIT);
     gl.enable(DEPTH_TEST);
     gl.disable(BLEND);
+    
+    double rows = ro.toDouble();
+    double cols = co.toDouble();
 
     // Setup the perspective - you might be wondering why we do this every
     // time, and that will become clear in much later lessons. Just know, you
@@ -136,7 +141,12 @@ void setMatrixUniforms() {
     mvPushMatrix();
 
     mvMatrix.translate([-((unit_width/2)),-(unit_width/2)+4, -75.0]);
-
+    
+    // triangle color
+    double r = 1.0;
+    double g = 0.0;
+    double b = 0.0;
+    double a = 1.0;
 
     for (int j = 0; j < cols; j++){
       if (j != 0){
@@ -154,8 +164,15 @@ void setMatrixUniforms() {
     for (int i = 0; i < rows; i++){
       gl.bindBuffer(ARRAY_BUFFER,tri_buff);
       gl.vertexAttribPointer(program.attributes['aVertexPosition'], 3, FLOAT, false, 0, 0);
-      gl.bindBuffer(ARRAY_BUFFER, on_color_buff);
-      gl.vertexAttribPointer(program.attributes['aVertexColor'], 4, FLOAT, false, 0, 0);
+      //gl.bindBuffer(ARRAY_BUFFER, on_color_buff);
+      //gl.vertexAttribPointer(program.attributes['aVertexColor'], 4, FLOAT, false, 0, 0);
+      
+      // triangle color
+      g -= 1.0/255.0;
+      if (g < 0.0) g = 1.0;
+      b = g;
+      gl.uniform4f(program.uniforms['uColor'], r, g, b, a);
+      
       setMatrixUniforms();
       gl.drawArrays(TRIANGLE_STRIP, 0, 3);
       mvMatrix.translate([0.0, volume_of_a_space_h+2, 0.0]);
