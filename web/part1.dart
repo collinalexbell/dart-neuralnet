@@ -102,9 +102,9 @@ void setMatrixUniforms() {
     // where you'd get to play around.
   }
 
-  void drawNeurons(int viewHeight, int viewWidth, num aspect, int rows, int cols){
+  void drawNeurons(int viewHeight, int viewWidth, num aspect, int rows, int cols, List<List<num>> input_vectors){
+    print(input_vectors.length);
     // Basic viewport setup and clearing of the screen
-    print ("in draw neuons");
     gl.viewport(0, 0, viewWidth, viewHeight);
     gl.clear(COLOR_BUFFER_BIT | DEPTH_BUFFER_BIT);
     gl.enable(DEPTH_TEST);
@@ -154,7 +154,11 @@ void setMatrixUniforms() {
     for (int i = 0; i < rows; i++){
       gl.bindBuffer(ARRAY_BUFFER,tri_buff);
       gl.vertexAttribPointer(program.attributes['aVertexPosition'], 3, FLOAT, false, 0, 0);
-      gl.bindBuffer(ARRAY_BUFFER, on_color_buff);
+      if (input_vectors[i][j] > .5){
+        gl.bindBuffer(ARRAY_BUFFER, on_color_buff);
+      }else{
+        gl.bindBuffer(ARRAY_BUFFER, off_color_buff);
+      }
       gl.vertexAttribPointer(program.attributes['aVertexColor'], 4, FLOAT, false, 0, 0);
       setMatrixUniforms();
       gl.drawArrays(TRIANGLE_STRIP, 0, 3);

@@ -93,7 +93,20 @@ tick(time) {
   if (trackFrameRate) frameCount(time);
   neuron_part.handleKeys();
   neuron_part.animate(time);
-  neuron_part.drawNeurons(canvas.width, canvas.height, canvas.width/canvas.height,15,15);
+  List<List<num>> input_vectors;
+  input_vectors =  [
+    [0,0,0,1,0,0,1,0,1,0],
+    [0,0,1,1,0,1,0,0,0,1],
+    [0,1,1,0,0,1,1,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [1,1,1,1,1,1,1,1,1,1],
+    [0,1,0,1,1,0,1,0,1,1],
+    [0,0,0,0,1,1,1,1,1,1],
+    [0,1,1,0,1,0,0,0,0,1],
+    [0,0,0,0,0,1,1,1,0,1],
+    [0,0,0,0,0,1,1,1,0,1]
+    ];
+  neuron_part.drawNeurons(canvas.width, canvas.height, canvas.width/canvas.height,input_vectors.length,input_vectors[0].length,input_vectors);
 }
 
 /**
@@ -199,7 +212,7 @@ abstract class NeuronPart {
   /**
    * Render the scene to the [viewWidth], [viewHeight], and [aspect] ratio.
    */
-  void drawScene(num viewWidth, num viewHeight, num aspect);
+  void drawNeurons(num viewWidth, num viewHeight, num aspect, int rows, int cols, List<List<num>>input_vecotrs);
 
   /**
    * Animate the scene any way you like. [now] is provided as a clock reference
@@ -220,8 +233,7 @@ abstract class NeuronPart {
   num lastTime = 0;
 }
 
-/**
- * Load the given image at [url] and call [handle] to execute some GL code.
+ /**
  * Return a [Future] to asynchronously notify when the texture is complete.
  */
 Future<Texture> loadTexture(String url, handle(Texture tex, ImageElement ele)) {
