@@ -2,22 +2,31 @@ import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
+import 'dart:convert';
 import 'package:csvparser/csvparser.dart';
 import '../lib/nnet.dart' as nnet;
 
 void main(){
   var file = new File('../data/digits.txt');
+  var converter = new JsonEncoder();
   Future<String> finishedReading = file.readAsString(encoding: ASCII);
   finishedReading.then((input_text){
-    List<List<double>> inputs = get_inputs(input_text);
+    List<List<num>> inputs = get_inputs(input_text);
+    List<String> i_string = new List<String>();
+    var json_inputs = new File('../data/inputs.json');
+    for (int i = 0; i < inputs.length; i++){
+      i_string.add(converter.convert(inputs[i])); 
+    }
+    json_inputs.writeAsString(converter.convert(inputs));
     
     var answer_file = new File('../data/digit_labels.txt');
     Future<String> finished_reading_answer = answer_file.readAsString(encoding: ASCII);
     finished_reading_answer.then((answer_text){
       List<int> answers = get_answers(answer_text);
+
       print("Number of data:" + inputs.length.toString());
       print("Number of answers:" + answers.length.toString());
-      start_net(inputs, answers);
+      //start_net(inputs, answers);
     });
 
   });
