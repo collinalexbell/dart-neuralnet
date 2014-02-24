@@ -5,7 +5,31 @@ packages:
     description: browser
     source: hosted
     version: "0.9.1"
+  collection:
+    description: collection
+    source: hosted
+    version: "0.9.1"
   csvparser:
     description: csvparser
     source: hosted
     version: "1.0.7"
+  http_server:
+    description: http_server
+    source: hosted
+    version: "0.9.1"
+  logging:
+    description: logging
+    source: hosted
+    version: "0.9.1+1"
+  mime:
+    description: mime
+    source: hosted
+    version: "0.9.0"
+  path:
+    description: path
+    source: hosted
+    version: "1.0.0"
+  start:
+    description: start
+    source: hosted
+    version: "0.2.0"

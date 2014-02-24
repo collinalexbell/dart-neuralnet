@@ -20,7 +20,7 @@ import 'dart:convert';
 import 'dart:web_gl';
 import 'dart:async';
 import 'dart:typed_data';
-import '../example/handwriting.dart'
+import '../example/handwriting.dart';
 
 // Some of our objects that we're going to support
 part 'renderable.dart';
